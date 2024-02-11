@@ -1,3 +1,4 @@
+![alt text](https://i.ibb.co/bbJM0K2/Open-TA-Dark-Cut.png)
 # Welcome to OpenTA: The Future of Online Learning
 
 Imagine a world where every online learner gets a personal, AI-powered teaching assistant as if they were attending university in-person. **Welcome to OpenTA**: the future of online courseware.
