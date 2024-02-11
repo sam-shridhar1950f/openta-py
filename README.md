@@ -22,3 +22,12 @@ We designed OpenTA as a **web app platform** that bridges the gap between online
 The goal of OpenTA is to provide an engaging platform for online students to intimately connect with their course content and remain committed to their learning journey. OpenTA is here to **redefine what it means to learn online**, making education accessible, personal, and infinitely more engaging for everyone, everywhere.
 
 Get ready to experience online learning **like never before.**
+
+Research Sources:
+- https://www.irrodl.org/index.php/irrodl/article/view/1455/2602
+- https://www.sciencedirect.com/science/article/pii/S0360131516300793?via%3Dihub#bbib8
+- https://www.frontiersin.org/articles/10.3389/feduc.2022.1074435/full#B26
+- https://www.classcentral.com/report/mooc-stats-2021/
+- https://ocw.mit.edu/ocw-www/2020-19_ocw_impact_report.pdf
+- https://facultygovernance.mit.edu/sites/default/files/reports/2022-02_Report_of_the_Ad_Hoc_Committee_on_MITx_and_MITx_Online.pdf
+- http://lfs.aminer.cn/misc/moocdata/publications/AAAI19-Feng-dropout-moocs.pdf
