@@ -1,0 +1,168 @@
+{% extends 'base.html' %} {% block content %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #2e2c2c;
+    color: #fbfaf9;
+  }
+
+  .header {
+    text-align: center;
+    padding: 40px 0px 10px;
+  }
+
+  .logo {
+      width: auto;
+      height: 50px;
+  }
+
+  #myInput {
+    background-image: url("/css/searchicon.png");
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 30%;
+    font-size: 16px;
+    padding: 12px 20px 12px 12px;
+    border: 2px solid #2e2c2c;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    outline: none;
+    color: #2e2c2c;
+  }
+
+  #myTable {
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+    background-color: #231f20;
+  }
+
+  #myTable td:first-child,
+  #myTable th:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  #myTable td:last-child,
+  #myTable th:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  #myTable th {
+    font-weight: 500;
+    background-color: #231f20;
+  }
+
+  #myTable tr {
+    /*box-shadow: 0 0px 5px rgba(255,255,255,0.1)*/
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    background-color: #231f20;
+    border-radius: 5px;
+  }
+
+  #myTable tr:hover {
+    /*box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);*/
+    box-shadow: 0 0 5px rgba(154,14,14, 0.8);
+  }
+
+  #myTable tr:first-child {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  }
+
+  .btn-outline-dark {
+    border: 1px solid #fbfaf9;
+    background-color: transparent;
+    color: #fbfaf9;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-dark:hover {
+    background-color: #9a0e0e;
+    color: #fbfaf9;
+  }
+
+  #searchBlock {
+    padding-top: 1%;
+    text-align: center;
+  }
+</style>
+
+<body>
+  <!-- <h2 style="text-align: center;">Organizations</h2> -->
+  <header class="header">
+    <img src="https://i.ibb.co/bbJM0K2/Open-TA-Dark-Cut.png" alt="OpenTA Logo"
+      class="logo">
+  </header>
+  <div id="searchBlock">
+    <div style="text-align: center">
+      <input
+        type="text"
+        id="myInput"
+        onkeyup="myFunction()"
+        placeholder="Search courses.."
+        title="Type in a name" />
+    </div>
+    <table id="myTable">
+      <tr class="header">
+        <th style="width: 60%">Course</th>
+        <th style="width: 40%">TA</th>
+      </tr>
+      <tr>
+        <td>
+          CS 2110
+        </td>
+        <td>
+          <form method="post">
+            {% csrf_token %}
+            <button
+              class="btn btn-outline-dark btn-block"
+              type="submit"
+              name="Chat"
+              value="CS2110 @ Cornell">
+              Chat
+            </button>
+          </form>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+
+  {% endblock %}
+</body>

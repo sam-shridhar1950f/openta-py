@@ -1,0 +1,466 @@
+{% extends 'base.html' %} {% load static %} {% block styles %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+<style>
+  html body {
+    height: 100%;
+    background-color: #2e2c2c !important;
+  }
+
+  #querylist {
+    border-radius: 25px;
+  }
+
+  .dot-elastic {
+    left: 20px;
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #665bca;
+    color: #665bca;
+    animation: dot-elastic 1s infinite linear;
+  }
+  .dot-elastic::before,
+  .dot-elastic::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  .dot-elastic::before {
+    left: -9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #2250b7;
+    color: #2250b7;
+    animation: dot-elastic-before 1s infinite linear;
+  }
+  .dot-elastic::after {
+    left: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #a966dd;
+    color: #a966dd;
+    animation: dot-elastic-after 1s infinite linear;
+  }
+
+  @keyframes dot-elastic-before {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1.5);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @keyframes dot-elastic {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 1.5);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @keyframes dot-elastic-after {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1.5);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+
+  /* Dropup Button */
+  .dropbtn {
+    background-color: #231f20;
+    color: white;
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+  }
+
+  /* The container <div> - needed to position the dropup content */
+  .dropup {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Dropup content (Hidden by Default) */
+  .dropup-content {
+    text-align: center;
+    display: none;
+    position: absolute;
+    bottom: 40px;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+  /* Links inside the dropup */
+  .dropup-content a {
+    text-align: center;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Change color of dropup links on hover */
+  .dropup-content a:hover {
+    background-color: #ddd;
+  }
+
+  /* Show the dropup menu on hover */
+  .dropup:hover .dropup-content {
+    display: block;
+  }
+
+  /* Change the background color of the dropup button when the dropup content is shown */
+  .dropup:hover .dropbtn {
+    background-color: #231f20;
+  }
+
+  .input-container {
+    position: relative;
+    flex-grow: 1;
+    padding-left: 10px;
+  }
+
+  .input-group-append {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+
+  .messages-box {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #2e2c2c !important;
+    margin: auto;
+    width: 60%;
+  }
+
+  .messages-list {
+    padding-left: 0;
+    background-color: white !important;
+  }
+
+  .message-sender {
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .message-sender-name {
+    vertical-align: middle;
+  }
+
+  #responsedata {
+    white-space: pre-line;
+    /* white-space: pre-wrap; */
+    /* margin-left: 0; */
+    /* padding-left: 0; */
+  }
+
+  #orgresponsedata {
+    white-space: pre;
+    /* white-space: pre-wrap; */
+    /* margin-left: 0; */
+    /* padding-left: 0; */
+  }
+
+  .message {
+    list-style: none;
+  }
+
+  .message-text {
+    padding: 10px;
+    border-radius: 5px;
+    /* white-space: pre-wrap; */
+  }
+
+  .sent {
+    background-color: #2e2c2c;
+    align-self: flex-end;
+    color: white;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+      "Lucida Sans", Arial, sans-serif;
+  }
+
+  .received {
+    background-color: #2e2c2c;
+    align-self: flex-start;
+    color: white;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+      "Lucida Sans", Arial, sans-serif;
+  }
+
+  .message-form {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background-color: #2e2c2c;
+  }
+
+  .message-input {
+    flex: 1;
+    border-radius: 25px;
+    border-right: none;
+    border: #212529;
+    color: #fbfaf9;
+    background: transparent;
+  }
+
+  input[type="text"]:focus {
+    background: #2e2c2c;
+    color: #fbfaf9;
+  }
+
+  .btn-send {
+    border-radius: 25px;
+  }
+
+  .chat-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2e2c2c !important;
+  }
+
+  #card {
+    background-color: #2e2c2c;
+    border-bottom-color: #2e2c2c;
+  }
+
+  .profile-pic {
+    height: 25px;
+    padding-right: 8px;
+    object-fit: cover;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="chat-container">
+  <div id="card" class="card flex-grow-1">
+    <div class="card-header d-flex justify-content-between">
+      <div>
+        <a
+          class="btn btn-dark"
+          style="color: #fbfaf9; background-color: #2e2c2c"
+          href="organizations"
+          role="button"
+          >Dashboard</a
+        >
+      </div>
+      <div class="mx-auto">
+        <img
+          src="https://i.ibb.co/bbJM0K2/Open-TA-Dark-Cut.png"
+          alt="OpenTA Logo"
+          style="height: 38px"
+        />
+      </div>
+      <div>
+        {%if user.is_authenticated %}
+        <a
+          class="btn btn-dark"
+          style="color: #9a0e0e; background-color: #2e2c2c"
+          href="logout"
+          role="button"
+          >Logout</a
+        >
+        {% else %}
+        <a
+          class="btn btn-dark"
+          style="color: #fbfaf9; background-color: #2e2c2c"
+          href="login"
+          role="button"
+          >Login</a
+        >
+        <a
+          class="btn btn-dark"
+          style="color: #fbfaf9; background-color: #2e2c2c"
+          href="register"
+          role="button"
+          >Register</a
+        >
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-body messages-box">
+      <ul class="list-unstyled messages-list">
+        <li class="message received">
+          <div class="message-text">
+            <div class="message-sender">
+              <img
+                src="https://i.ibb.co/QF6bCLd/Open-TA-PFP.png"
+                alt="OpenTA Profile Picture"
+                class="profile-pic"
+              />
+              <div class="message-sender-name">
+                <b>TA @ {{course}}</b>
+              </div>
+            </div>
+            <div class="message-content">
+              Hi {{user.username}}, I am {{school}}'s {{course}} digital TA. My
+              replies may not always be accurate, so always think critically and
+              call out my mistakes.
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div
+        id="dot-elastic"
+        class="dot-elastic"
+        style="display: none"
+      ></div>
+    </div>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+  </div>
+  <form class="message-form">
+    {%csrf_token%}
+    <div class="input-group">
+      <div class="dropup">
+        <select name="Query" class="btn btn-dark btn-block" id="querylist">
+          <div class="dropup-content">
+            <option value="general">Discussion</option>
+            <option value="follow up">Follow Up</option>
+            <option value="quiz">Quiz</option>
+            <option value="exam">Exam</option>
+            <option value="outline">Outline</option>
+            <option value="locate">Locate</option>
+            <option value="notes">Notes</option>
+            <option value="summary">Summary</option>
+          </div>
+        </select>
+      </div>
+      <div class="input-container">
+        <input
+          type="text"
+          class="form-control message-input"
+          placeholder="Message your TA..."
+        />
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-dark btn-send">Send</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script> -->
+<script>
+  const messagesList = document.querySelector(".messages-list");
+  const messageForm = document.querySelector(".message-form");
+  const messageInput = document.querySelector(".message-input");
+  const queryType = document.querySelector("#querylist");
+
+  messageForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const message = messageInput.value.trim();
+    const query_type = queryType.value.trim();
+    // console.log(query_type)
+    if (message.length === 0) {
+      return;
+    }
+
+    document.getElementById("dot-elastic").style.display = "block";
+
+    const messageItem = document.createElement("li");
+    messageItem.classList.add("message", "sent");
+    messageItem.innerHTML = `
+        <div class="message-text">
+          <div class="message-sender">
+            <img src="https://i.ibb.co/9tjLHxb/pfp.png" alt="User Profile Picture" class="profile-pic">
+            <div class="message-sender-name">
+              <b>{{user.username}}</b>
+            </div>
+          </div>
+          <div id="promptdata" class="message-content">
+            ${message}
+          </div>
+        </div>`;
+    messagesList.appendChild(messageItem);
+
+    messageInput.value = "";
+
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfmiddlewaretoken: document.querySelector(
+          "[name=csrfmiddlewaretoken]"
+        ).value,
+        message: message,
+        query_type: query_type,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById("dot-elastic").style.display = "none";
+        var response = data.response;
+        console.log(response);
+        response = response.trim();
+        var responseSpan = response.split("").join("</span><span>");
+        responseSpan = responseSpan.replace(/^\n/, "");
+        const messageItem = document.createElement("li");
+        messageItem.classList.add("message", "received");
+
+        var spans = "<span>" + responseSpan + "</span>";
+
+        messageItem.innerHTML = `
+        <div class="message-text">
+          <div class="message-sender">
+            <img src="https://i.ibb.co/QF6bCLd/Open-TA-PFP.png" alt="OpenTA Profile Picture" class="profile-pic">
+            <div class="message-sender-name">
+              <b>TA @ {{course}}</b>
+            </div>
+          </div>
+          <div id="responsedata" class="message-content">${response}</div>
+        </div>
+          `;
+        messagesList.appendChild(messageItem);
+      });
+  });
+</script>
+
+{% endblock %}
