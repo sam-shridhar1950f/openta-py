@@ -20,17 +20,16 @@ import io
 # 33290b8c-00ff-432a-9042-ba9bb087eebb
 # Note To Self: 8000 tokens is about 6500 words, so use as modulo for calculating chunks
 
-# "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" "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" # "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" # old openai api keys
-# openai.api_key = "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"
+# openai.api_key = "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"
 # pinecone.init(api_key="190dabf8-0c0b-4690-8733-0be7fcecdb34") # init pinecone db
 
 load_dotenv()
 # S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 S3_BUCKET_NAME = "openta-bucket"
 # ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
-ACCESS_KEY = "AKIAY27SSCRNPVHS3LXT"
+ACCESS_KEY = "AKIAY27SSCRNCZHKLINX"
 # SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-SECRET_KEY = "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"
+SECRET_KEY = "wAOJ0VF/DgItn1cuYi/0JnALgUA9O3KDAybonyJn"
 
 
 class Course:
@@ -318,7 +317,33 @@ class Course:
 
         # print(possible_contexts)
         multiple_matches = False
-        context = possible_contexts["matches"][0]["id"]
+        try:
+            context = possible_contexts["matches"][0]["id"]
+        except:
+            content = "The user-requested lecture is not in the course."
+            build_context = header + "\n" + content  # + "\n" + prompt
+            self.messages.append(dict(role="user", content=build_context))
+            try:
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=self.messages,
+                    max_tokens=1000,
+                    temperature=0.5,
+                )
+            except:
+                time.sleep(0.5)  # this could minimum be 0.006
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=self.messages,
+                    max_tokens=1000,
+                    temperature=0.5,
+                )
+
+            self.messages[-1] = (dict(role="user", content=prompt))
+            # response.choices[0].text.strip()
+            message = response['choices'][0]['message']['content']
+            return message
+
         if "-" in context:
             multiple_matches = True
             context_split = context.split("-")
@@ -615,16 +640,18 @@ class Course:
         # print(context)
             # if there are multiple lectures for one quiz, generate ~2000-2500 token summary for each section, concatenate summaries into one body, and pass as context
 
-                summaries = []
-                # response_summary = summarize(context, 0.03)
-                response_summary = content
-                print(context)
-                print("AHHH")
-                summaries.append(response_summary)
-                final_summary = f"Summary of Lecture {i}" + \
-                    "\n".join(summaries)
-                grand_summaries.append(final_summary)
+            summaries = []
+            # response_summary = summarize(context, 0.03)
+            response_summary = content
+            print(context)
+            print("AHHH")
+            print(f"Length of lecture: {len(content)}")
+            summaries.append(response_summary)
+            final_summary = f"Summary of Lecture {i}" + \
+                "\n".join(summaries)
+            grand_summaries.append(final_summary)
         grand_summary_final = "\n".join(grand_summaries)
+        print("grand_summary_final: " + grand_summary_final)
         header = f"Using these summaries of lectures as context, write a challenging exam according to the user's specifications covering the concepts in these lectures. Make sure to introduce your response as a practice exam for lectures {n1}-{n2}."
         build_context = header + "\n" + grand_summary_final + "\n" + prompt
         # print(final_summary)
@@ -634,7 +661,7 @@ class Course:
             response = openai.ChatCompletion.create(
                 model=model,
                 messages=self.messages,
-                max_tokens=1000,
+                max_tokens=3000,
                 temperature=0.5,
             )
         except:
@@ -642,7 +669,7 @@ class Course:
             response = openai.ChatCompletion.create(
                 model=model,
                 messages=self.messages,
-                max_tokens=1000,
+                max_tokens=3000,
                 temperature=0.5,
             )
 
@@ -651,7 +678,7 @@ class Course:
         return message
 
     # try gpt-4-32k if this runs out of tokens
-    def locate_query(self, prompt, model="gpt-4"):
+    def locate_query(self, prompt, model="gpt-4-turbo-preview"):
         index = pinecone.Index(self.pinecone_index)
         header = "Using this lecture transcript as context, provide a response for the query. If the context seems irrelevant to the query, ignore the context proceed to respond normally."
 
