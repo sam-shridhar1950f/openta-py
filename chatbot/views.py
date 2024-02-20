@@ -38,7 +38,7 @@ logging.debug("Logging started on %s for %s" %
               (logging.root.name, logging.getLevelName(lvl)))
 
 # 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" #'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'
-openai_api_key = "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"
+openai_api_key = "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"
 openai.api_key = openai_api_key
 
 pinecone.init(api_key="190dabf8-0c0b-4690-8733-0be7fcecdb34")

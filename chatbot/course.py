@@ -20,8 +20,8 @@ import io
 # 33290b8c-00ff-432a-9042-ba9bb087eebb
 # Note To Self: 8000 tokens is about 6500 words, so use as modulo for calculating chunks
 
-# "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" # "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" # old openai api keys
-# openai.api_key = "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"
+# "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" "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" # "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" # old openai api keys
+# openai.api_key = "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"
 # pinecone.init(api_key="190dabf8-0c0b-4690-8733-0be7fcecdb34") # init pinecone db
 
 load_dotenv()
@@ -43,7 +43,7 @@ class Course:
         self.pinecone_index = school.lower() + "-" + course_title.lower()
         self.messages = [{
             "role": "system",
-            "content": f"If someone asks who you are, respond that you are a teaching assistant for the course {course_title} at {school}"
+            "content": f"You are a teaching assistant for the course {course_title} at {school}"
         }]
         if self.pinecone_index in pinecone.list_indexes():
             pass
@@ -111,7 +111,7 @@ class Course:
 
     def query(self, prompt, model="gpt-4"):  # try gpt-4-32k if this runs out of tokens
         index = pinecone.Index(self.pinecone_index)
-        header = "Using this lecture transcript as context, provide a brief response for the query. If the context seems irrelevant to the query, ignore the context proceed to respond normally."
+        header = "Using this lecture transcript as context, provide a brief response for the query. If the context seems irrelevant to the query, ignore the context and proceed to respond normally."
 
         query_response = openai.Embedding.create(  # related text (large)
             model="text-embedding-ada-002",
@@ -163,7 +163,9 @@ class Course:
             l = [" ".join(content[i:i+span])
                  for i in range(0, num_words, span)]
             content = l[ind - 1]
-        build_context = header + "\n" + content + "\n" + prompt
+        build_context = header + "\nQuery: \"" + prompt + \
+            "\"\n\n\nFOCUS ON ANSWERING THE QUERY AND ONLY THE QUERY. The following lecture may be useful in ANSWERING THE QUERY: " + content
+        print("\n" + build_context + "\n")
         self.messages.append(dict(role="user", content=build_context))
         try:
             response = openai.ChatCompletion.create(
