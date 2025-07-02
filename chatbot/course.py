@@ -13,10 +13,7 @@ from string import punctuation
 from heapq import nlargest
 from .summary import summarize
 import time
-# 33290b8c-00ff-432a-9042-ba9bb087eebb
-# Note To Self: 8000 tokens is about 6500 words, so use as modulo for calculating chunks
-# openai.api_key = "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" # "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" # openai api key
-# pinecone.init(api_key="190dabf8-0c0b-4690-8733-0be7fcecdb34") # init pinecone db
+
 
 class Course:
     
